@@ -16,5 +16,9 @@ for x, y in nonsilent_ranges:
     count += 1
     
     new_file = sound_file[x : y]
-    new_file.export("out/" + str(count)+"-"+str(x) + "-" + str(y) +".wav", format="wav")
+    
+    str_count = str(count)
+    str_count = str_count.zfill(2)
+    
+    new_file.export("out/" +str_count +"-"+str(x) + "-" + str(y) +".wav", format="wav")
 

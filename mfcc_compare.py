@@ -116,12 +116,18 @@ def compare_librosa_wav_files(wav1,wav2,usenorm="euclidean"):
 
     #Showing multiple plots using subplot
     #plt.subplot(1, 2, 1) 
-    mfcc1 = librosa.feature.mfcc(y1,sr1)   #Computing MFCC values
+    
+    # parameters
+    #https://stackoverflow.com/questions/37963042/python-librosa-what-is-the-default-frame-size-used-to-compute-the-mfcc-feature
+    
+    mfcc1 = librosa.feature.mfcc(y1,sr1, n_fft=512, hop_length=128, n_mfcc=20)   #Computing MFCC values
+    
+    #print(np.array(mfcc1).shape)
     
     #librosa.display.specshow(mfcc1)
 
     #plt.subplot(1, 2, 2)
-    mfcc2 = librosa.feature.mfcc(y2, sr2)
+    mfcc2 = librosa.feature.mfcc(y2, sr2, n_fft=512, hop_length=128, n_mfcc=20)
     #librosa.display.specshow(mfcc2)
 
     if usenorm=="chisq":

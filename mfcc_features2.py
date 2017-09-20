@@ -65,7 +65,7 @@ L2 = np.zeros((number_of_records,number_of_records))
 
 for i in range(0,number_of_records):
     for j in range(0,number_of_records):
-        L2[i,j] = compare_librosa_wav_files(mfcc_descriptors[i][1], mfcc_descriptors[j][1],'sqeuclidean')
+        L2[i,j] = compare_librosa_wav_files(mfcc_descriptors[i][1], mfcc_descriptors[j][1],'euclidean')
         
 L2 = np.vstack((range(1,14),L2))
 
