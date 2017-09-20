@@ -16,6 +16,7 @@ import scipy
 #************************************************************************
 #https://github.com/pierre-rouanet/dtw/blob/master/dtw.py
 from numpy import array, zeros, argmin, inf, equal, ndim
+import numpy as np
 from scipy.spatial.distance import cdist
 
 def dtw(x, y, dist):
@@ -101,11 +102,13 @@ def _traceback(D):
 
 #************************************************************************
 
+# best distance for histograms
+def chiSquared(p,q):
+    return 0.5*np.sum((p-q)**2/(p+q+1e-6))
 
 
 
-
-def compare_librosa_wav_files(wav1,wav2,usenorm="l2"):
+def compare_librosa_wav_files(wav1,wav2,usenorm="euclidean"):
 
     #Loading audio files
     y1, sr1 = wav1[0],wav1[1] #librosa.load('out/1-6988-7076.wav') 
@@ -114,18 +117,19 @@ def compare_librosa_wav_files(wav1,wav2,usenorm="l2"):
     #Showing multiple plots using subplot
     #plt.subplot(1, 2, 1) 
     mfcc1 = librosa.feature.mfcc(y1,sr1)   #Computing MFCC values
+    
     #librosa.display.specshow(mfcc1)
 
     #plt.subplot(1, 2, 2)
     mfcc2 = librosa.feature.mfcc(y2, sr2)
     #librosa.display.specshow(mfcc2)
 
-    if usenorm=="l2":
-        d = lambda x, y: norm(x - y, ord=1)
-    if usenorm=="cos":
-        d = lambda x, y: scipy.spatial.distance.cosine(x,y)
+    if usenorm=="chisq":
+        d=lambda x, y: chiSquared(x,y)
+    else:
+        d=usenorm
         
-    dist, cost, acc, path = fastdtw(mfcc1.T, mfcc2.T, dist=d)
+    dist, cost, acc, path = fastdtw(mfcc1.T, mfcc2.T, d)
     #print("The normalized distance between the two : ",dist)   # 0 for similar audios 
 
     #plt.imshow(cost.T, origin='lower', cmap=plt.get_cmap('gray'), interpolation='nearest')

@@ -65,14 +65,13 @@ L2 = np.zeros((number_of_records,number_of_records))
 
 for i in range(0,number_of_records):
     for j in range(0,number_of_records):
-        L2[i,j] = compare_librosa_wav_files(mfcc_descriptors[i][1], mfcc_descriptors[j][1],"l2")
+        L2[i,j] = compare_librosa_wav_files(mfcc_descriptors[i][1], mfcc_descriptors[j][1],'sqeuclidean')
         
 L2 = np.vstack((range(1,14),L2))
 
-print np.transpose(np.array(range(1,14)))
 L2 = np.append(np.array(range(0,14)).reshape(14,1),L2,axis=1)
         
 print("Normalized L2 distances matrix:\n")
-np.set_printoptions(precision=2,linewidth=200)
+np.set_printoptions(precision=3,suppress=True, linewidth=200)
 print(L2)
 
