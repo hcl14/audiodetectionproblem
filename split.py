@@ -9,8 +9,12 @@ nonsilent_ranges = pydub.silence.detect_nonsilent(sound_file,min_silence_len=100
 
 print(nonsilent_ranges)
 
+count = 0
 
 for x, y in nonsilent_ranges:
+    
+    count += 1
+    
     new_file = sound_file[x : y]
-    new_file.export("out/" + str(x) + "-" + str(y) +".wav", format="wav")
+    new_file.export("out/" + str(count)+"-"+str(x) + "-" + str(y) +".wav", format="wav")
 

@@ -30,7 +30,7 @@ from scikits.talkbox.features import mfcc
 
 mfcc_descriptors = []
 
-for wavfile in wavfiles:
+for wavfile in sorted(wavfiles):
 
     print(wavfile)
     
@@ -38,7 +38,10 @@ for wavfile in wavfiles:
     
     try:
         # raises error on very short records like noise
+        #ceps, mspec, spec = mfcc(X,nwin=256, nfft=512, fs=16000, nceps=13)
+        
         ceps, mspec, spec = mfcc(X,nwin=256, nfft=512, fs=16000, nceps=13)
+        
     except:
         print('record too short, don\'t know what to do')
         #continue
