@@ -39,12 +39,15 @@ for wavfile in sorted(wavfiles):
     
     
     wav = [0,0]
-    wav[0],wav[1] = librosa.load(wavfile)
-    
+    #wav[0],wav[1] = librosa.load(wavfile)
+    wav = read_wav(wavfile)
     
     mfcc_descriptors.append((wavfile,wav))
     
     
+
+
+
 #print(mfcc_descriptors)
 
 
@@ -57,6 +60,9 @@ for wavfile in sorted(wavfiles):
 number_of_records = len(mfcc_descriptors)
 
 
+
+
+
 print
 print
 
@@ -65,11 +71,11 @@ L2 = np.zeros((number_of_records,number_of_records))
 
 for i in range(0,number_of_records):
     for j in range(0,number_of_records):
-        L2[i,j] = compare_librosa_wav_files(mfcc_descriptors[i][1], mfcc_descriptors[j][1],'euclidean')
+        L2[i,j] = compare_wav_files(mfcc_descriptors[i][1], mfcc_descriptors[j][1],'euclidean')
         
-L2 = np.vstack((range(1,14),L2))
+L2 = np.vstack((range(1,15),L2))
 
-L2 = np.append(np.array(range(0,14)).reshape(14,1),L2,axis=1)
+L2 = np.append(np.array(range(0,15)).reshape(15,1),L2,axis=1)
         
 print("Normalized L2 distances matrix:\n")
 np.set_printoptions(precision=3,suppress=True, linewidth=200)
