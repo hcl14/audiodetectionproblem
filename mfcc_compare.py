@@ -16,12 +16,10 @@ def compare_wav_files(wav1,wav2,usenorm="euclidean"):
     y2, sr2 = wav2[0],wav2[1] #librosa.load('out/2-14068-14168.wav') 
 
     
-    _,mfcc1,_ = mfcc(wav1)
+    filter_banks1,mfcc1,_ = mfcc(wav1)
     
     
-    _,mfcc2,_ = mfcc(wav2)
-    
-    
+    filter_banks2,mfcc2,_ = mfcc(wav2)
 
     if usenorm=="chisq":
         d=lambda x, y: chiSquared(x,y)
