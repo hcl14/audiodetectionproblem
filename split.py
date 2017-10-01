@@ -2,6 +2,8 @@ import pydub
 import statistics
 import numpy as np
 
+from mfcc import smooth
+
 #sound_file = pydub.AudioSegment.from_wav("wav/A_0_Restricted_302593674_12_Fra_21112012_191255-in_noise_reduction_attempt1.wav")
 sound_file = pydub.AudioSegment.from_wav("wav/A_726_7072305480_133643004_14_Eng_13122016_165119-in_noise_reduction_attempt2.wav")
 
@@ -57,6 +59,13 @@ print("average amplitude to be applied: "+ str(average_amplitude))
 def match_target_amplitude(sound, target_dBFS):
     change_in_dBFS = target_dBFS - sound.dBFS
     return sound.apply_gain(change_in_dBFS)
+
+
+def get_array_of_samples(self):
+    """
+    returns the raw_data as an array of samples
+    """
+    return array.array(self.array_type, self._data)
 
 
 
