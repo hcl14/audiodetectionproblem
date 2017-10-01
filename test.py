@@ -73,7 +73,42 @@ for i in range(0,number_of_records):
     for j in range(0,number_of_records):
         L2[i,j] = compare_wav_files(mfcc_descriptors[i][1], mfcc_descriptors[j][1],'correlation')  # cosine and correlation are good
         
-clusters = cluster(L2,0.29)
+
+l2r = L2.ravel()
+#diffs = [abs(i-j) for i in l2r for j in l2r if i != j]  #distances
+#diffs = np.sort(diffs)
+
+
+# find approximate starting point for eps, but that's innacurate - the supposition is that variances of 'yes' and 'no' are equal
+#eps = np.max(diffs)/2
+
+# better to operate distances to 3 nearest neighbours : http://iopscience.iop.org/article/10.1088/1755-1315/31/1/012012/pdf
+
+
+l2r = L2.ravel()
+
+def three_nearest_neighbour_distances(i, l2r):
+    
+    dists = [abs(l2r[i]-l2r[j]) for j in range(len(l2r)) if i != j]
+    
+    dists = np.sort(dists)
+    
+    return dists[int(len(l2r)/4)]   # we think that between quarter and half of the points belong to the one cluster: wew need to scan area between 1/4 and 1/2 (e.g. 3/8)
+
+
+k3n_d = []
+
+for i in range(0,len(l2r)):
+        k3n_d.append(three_nearest_neighbour_distances(i, l2r))
+        
+eps = np.max(k3n_d)
+    
+
+
+
+clusters = cluster(L2,eps)
+
+
         
 L2 = np.vstack((range(1,15),L2))
 
@@ -83,6 +118,7 @@ print("Normalized L2 distances matrix:\n")
 np.set_printoptions(precision=3,suppress=True, linewidth=200)
 print(L2)
 
+print('supposed eps: '+str(eps))
 print('clusters:')
 print(clusters)
 
