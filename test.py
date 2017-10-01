@@ -11,6 +11,17 @@
 import os
 import sys
 
+
+from split import split
+
+
+
+
+path = "wav/A_0_Restricted_302593674_12_Fra_21112012_191255-in_noise_reduction_attempt2.wav"
+
+split(path)
+
+
 path = 'out/'
 
 wavfiles = []
@@ -93,21 +104,40 @@ def three_nearest_neighbour_distances(i, l2r):
     
     dists = np.sort(dists)
     
-    return dists[int(len(l2r)/4)]   # we think that between quarter and half of the points belong to the one cluster: wew need to scan area between 1/4 and 1/2 (e.g. 3/8)
+    return dists[int(len(l2r)/4)], dists[3*int(len(l2r)/8)]   # we think that between quarter and half of the points belong to the one cluster: wew need to scan area between 1/4 and 1/2 (e.g. 3/8)
 
 
-k3n_d = []
+k3n_d1 = []
+k3n_d2 = []
+
 
 for i in range(0,len(l2r)):
-        k3n_d.append(three_nearest_neighbour_distances(i, l2r))
+    
+        d1, d2 = three_nearest_neighbour_distances(i, l2r)
+    
+        k3n_d1.append(d1)
         
-eps = np.max(k3n_d)
+        k3n_d2.append(d2)
+        
+        
+eps1 = np.max(k3n_d1)
+eps2 = np.max(k3n_d2)
     
 
+clusters1 = cluster(L2,eps1)
+clusters2 = cluster(L2,eps2)
 
+# let's choose the clustering which has less elements of a third cluster (-1 is outlier, let's count it as a simpler problem)
 
-clusters = cluster(L2,eps)
+num_outliers1 = sum([x==-1 for x in clusters1])
+num_outliers2 = sum([x==-1 for x in clusters2])
 
+if num_outliers1<num_outliers2:
+    eps = eps1
+    clusters = clusters1
+else:
+    eps = eps2
+    clusters = clusters2
 
         
 L2 = np.vstack((range(1,15),L2))
@@ -122,5 +152,9 @@ print('supposed eps: '+str(eps))
 print('clusters:')
 print(clusters)
 
+
+
+num_answers = len([x for x in clusters if x != -1])
+print(num_answers)
 
 
