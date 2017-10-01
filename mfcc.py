@@ -4,6 +4,7 @@
 import numpy
 import scipy.io.wavfile
 from scipy.fftpack import dct
+from sklearn.cluster import DBSCAN
 
 
 def read_wav(wavfile, smooth=True):
@@ -339,3 +340,11 @@ def smooth_signal(x,window_len=5,window='hanning'):
 
     y=numpy.convolve(w/w.sum(),s,mode='valid')
     return y#y[(window_len/2-1):-(window_len/2)]
+
+
+
+def cluster(distance_matrix, eps=0.28):
+    
+    
+    db = DBSCAN(eps=eps,min_samples=2,metric="precomputed")
+    return db.fit_predict(distance_matrix)
