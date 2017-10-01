@@ -4,6 +4,20 @@ import numpy as np
 import os,shutil
 
 
+def match_target_amplitude(sound, target_dBFS):
+        change_in_dBFS = target_dBFS - sound.dBFS
+        return sound.apply_gain(change_in_dBFS)
+
+
+def get_array_of_samples(self):
+    """
+    returns the raw_data as an array of samples
+    """
+    return array.array(self.array_type, self._data)
+
+
+
+
 
 def split(path):
 
@@ -21,7 +35,11 @@ def split(path):
 
 
 
-
+    #increase sound if too quiet
+    #sound_file = match_target_amplitude(sound_file, -20)
+    
+    
+    
 
     '''
     loudness = sound.dBFS
@@ -42,7 +60,7 @@ def split(path):
     threshold =  statistics.median(loudness)*0.8
     print('Noise level supposed to be (<-50 is converted to 50):' + str(threshold))
 
-    threshold = max([-50,threshold])
+    #threshold = max([-50,threshold])
 
 
 
@@ -70,19 +88,7 @@ def split(path):
 
 
 
-    def match_target_amplitude(sound, target_dBFS):
-        change_in_dBFS = target_dBFS - sound.dBFS
-        return sound.apply_gain(change_in_dBFS)
-
-
-    def get_array_of_samples(self):
-        """
-        returns the raw_data as an array of samples
-        """
-        return array.array(self.array_type, self._data)
-
-
-
+    
     count = 0
 
     for x, y in nonsilent_ranges:

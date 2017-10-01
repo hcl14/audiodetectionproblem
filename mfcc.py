@@ -143,10 +143,10 @@ def mfcc(wav, pre_emphasis = 0.97, frame_size = 0.010, frame_stride = 0.005, NFF
     
     # normalization:
     
-    mfcc_normalized = mfcc/numpy.std(mfcc, axis=0) + 1e-8
+    mfcc_normalized = mfcc/(numpy.std(mfcc, axis=0) + 1e-8)
     
     
-    filter_banks_normalized = filter_banks/numpy.std(filter_banks, axis=0) + 1e-8
+    filter_banks_normalized = filter_banks/(numpy.std(filter_banks, axis=0) + 1e-8)
     
     
     #tl;dr: Use Mel-scaled filter banks if the machine learning algorithm is not susceptible to highly correlated input. Use MFCCs if the machine learning algorithm is susceptible to correlated input.

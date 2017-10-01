@@ -17,12 +17,15 @@ from split import split
 
 
 
+#path = "wav/A_257_VIP64_617420796_16_Tag_02082016_214704-in.wav"
 path = "wav/A_0_Restricted_302593674_12_Fra_21112012_191255-in_noise_reduction_attempt2.wav"
 
 split(path)
 
 
 path = 'out/'
+
+count_files = 0
 
 wavfiles = []
 # read file list
@@ -31,6 +34,7 @@ for file in os.listdir(path):
     if os.path.isfile(current):
         if current.split(".")[-1]=="wav":
             wavfiles.append(current)
+            count_files += 1
 
 
 import numpy as np
@@ -140,9 +144,9 @@ else:
     clusters = clusters2
 
         
-L2 = np.vstack((range(1,15),L2))
+L2 = np.vstack((range(1,count_files+1),L2))
 
-L2 = np.append(np.array(range(0,15)).reshape(15,1),L2,axis=1)
+L2 = np.append(np.array(range(0,count_files+1)).reshape(count_files+1,1),L2,axis=1)
         
 print("Normalized L2 distances matrix:\n")
 np.set_printoptions(precision=3,suppress=True, linewidth=200)
