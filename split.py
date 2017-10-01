@@ -1,8 +1,9 @@
 import pydub
 import statistics
+import numpy as np
 
 #sound_file = pydub.AudioSegment.from_wav("wav/A_0_Restricted_302593674_12_Fra_21112012_191255-in_noise_reduction_attempt1.wav")
-sound_file = pydub.AudioSegment.from_wav("wav/A_726_7072305480_133643004_14_Eng_13122016_165119-in.wav")
+sound_file = pydub.AudioSegment.from_wav("wav/A_726_7072305480_133643004_14_Eng_13122016_165119-in_noise_reduction_attempt2.wav")
 
 
 
@@ -20,10 +21,12 @@ loudness = []
 for i in range(0,numchunks):
     loudness.append(sound_file[20*i : 20*(i+1)].dBFS)  #we ignore last 20ms here
 
+loudness = [x for x in loudness if np.isfinite(x)]
+
 threshold =  statistics.median(loudness)*0.8
-print('Noise level supposed to be:' + str(threshold))
+print('Noise level supposed to be (<-50 is converted to 50):' + str(threshold))
 
-
+threshold = max([-50,threshold])
 
 
 
@@ -34,6 +37,29 @@ nonsilent_ranges = pydub.silence.detect_nonsilent(sound_file,min_silence_len=100
 
 print(nonsilent_ranges)
 
+
+#compute average amplitudes
+loudness = []
+for x, y in nonsilent_ranges:
+    
+    amplitude = sound_file[x : y].dBFS
+    
+    amplitude = max([-50,amplitude])
+    
+    loudness.append(amplitude)
+    
+average_amplitude = np.mean(loudness)
+
+print("average amplitude to be applied: "+ str(average_amplitude))
+
+
+
+def match_target_amplitude(sound, target_dBFS):
+    change_in_dBFS = target_dBFS - sound.dBFS
+    return sound.apply_gain(change_in_dBFS)
+
+
+
 count = 0
 
 for x, y in nonsilent_ranges:
@@ -41,6 +67,9 @@ for x, y in nonsilent_ranges:
     count += 1
     
     new_file = sound_file[x : y]
+    
+    # normalize amplitudes
+    new_file = match_target_amplitude(new_file, average_amplitude)
     
     str_count = str(count)
     str_count = str_count.zfill(2)

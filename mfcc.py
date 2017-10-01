@@ -27,7 +27,7 @@ def read_wav(wavfile):
 # num_ceps = 12 # Keeps from 2 to 13. How many cepstral coeficients to save
 # cep_lifter is a parameter typically set to 22 in most implementations. However, it refers to the dimensionality of the MFCC vector in the original formulation.
 
-def mfcc(wav, pre_emphasis = 0.97, frame_size = 0.020, frame_stride = 0.01, NFFT = 512, nfilt = 40, num_ceps = 12, cep_lifter = 22):
+def mfcc(wav, pre_emphasis = 0.97, frame_size = 0.010, frame_stride = 0.005, NFFT = 512, nfilt = 40, num_ceps = 12, cep_lifter = 22):
 
     sample_rate, signal = wav[0], wav[1]
     #sample_rate, signal = scipy.io.wavfile.read(wav)  # File assumed to be in the same directory
@@ -134,9 +134,17 @@ def mfcc(wav, pre_emphasis = 0.97, frame_size = 0.020, frame_stride = 0.01, NFFT
     mfcc -= (numpy.mean(mfcc, axis=0) + 1e-8)
     
     
+    # normalization:
+    
+    mfcc_normalized = mfcc/numpy.std(mfcc, axis=0) + 1e-8
+    
+    
+    filter_banks_normalized = filter_banks/numpy.std(filter_banks, axis=0) + 1e-8
+    
+    
     #tl;dr: Use Mel-scaled filter banks if the machine learning algorithm is not susceptible to highly correlated input. Use MFCCs if the machine learning algorithm is susceptible to correlated input.
 
-    return filter_banks, mfcc, mfcc_nonliftered
+    return filter_banks, mfcc, mfcc_nonliftered, mfcc_normalized, filter_banks_normalized
 
 
 
